@@ -90,17 +90,18 @@ function renderCart() {
   cartItems.innerHTML = "";
   let total = 0;
 
-  Object.values(cart).forEach(item => {
-    total += item.price * item.qty;
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <span>${item.name} × ${item.qty}</span>
-      <span>${formatCurrency(item.price * item.qty)} L.L.</span>
-      <button onclick="changeQty('${item.id}', -1)">-</button>
-      <button onclick="changeQty('${item.id}', 1)">+</button>
-    `;
-    cartItems.appendChild(div);
-  });
+Object.values(cart).forEach(item => {
+  total += item.price * item.qty;
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <span>${item.name}</span>
+    <button onclick="changeQty('${item.id}', -1)">-</button>
+    <span class="qty">${item.qty}</span>
+    <button onclick="changeQty('${item.id}', 1)">+</button>
+    <span>${formatCurrency(item.price * item.qty)} L.L.</span>
+  `;
+  cartItems.appendChild(div);
+});
 
   document.getElementById("total").textContent = formatCurrency(total);
 }
@@ -127,7 +128,7 @@ function checkout() {
   });
   message += `\nالإجمالي: ${formatCurrency(total)} L.L.`;
 
-  const phone = "965XXXXXXXX"; // ضع رقمك هنا
+  const phone = "0096170989802"; // ضع رقمك هنا
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
 }

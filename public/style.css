@@ -8,39 +8,67 @@ body {
 }
 
 /* Header */
+/* Header */
 header {
   text-align: center;
-  padding: 15px;
-  background: var(--primary, #ff6600);
+  background: #e74c3c;
   color: #fff;
-  font-size: 1.8rem;
+  font-weight: bold;
+  font-size: 1.4rem;   /* default for tablets/small screens */
+  padding: 12px;
+}
+
+/* Desktop larger */
+@media (min-width: 768px) {
+  header {
+    font-size: 1.6rem;
+    padding: 15px;
+  }
+}
+
+/* Small phones smaller */
+@media (max-width: 400px) {
+  header {
+    font-size: 1.2rem;
+    padding: 10px;
+  }
 }
 
 /* Categories */
 .categories {
   display: flex;
-  overflow-x: auto;
+  justify-content: space-between; /* spread buttons evenly */
+  flex-wrap: wrap;               /* wrap if needed */
   padding: 15px;
-  gap: 15px;
+  gap: 10px;
   background: #fff;
   border-bottom: 2px solid #eee;
 }
 .categories button {
-  flex: none;
-  padding: 12px 25px;
+  flex: 1 1 auto;               /* resize to fit container */
+  padding: 10px 0;
   border: none;
   border-radius: 25px;
-  background: var(--primary, #ff6600);
+  background: #e74c3c;
   color: #fff;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: bold;
+  text-align: center;
   white-space: nowrap;
   transition: 0.2s;
 }
 .categories button:hover {
-  background: #e65c00;
+  background: #e74c3c;
   transform: scale(1.05);
+}
+
+/* Adjust buttons on very small screens */
+@media (max-width: 400px) {
+  .categories button {
+    font-size: 0.85rem;
+    padding: 8px 0;
+  }
 }
 
 /* Menu Sections */
@@ -50,7 +78,7 @@ main section {
 main section h2 {
   font-size: 1.5rem;
   margin-bottom: 15px;
-  border-bottom: 2px solid var(--primary, #ff6600);
+  border-bottom: 2px solid #e74c3c;
   padding-bottom: 5px;
 }
 
@@ -87,7 +115,7 @@ main section h2 {
   line-height: 1.2;
 }
 .card-info strong {
-  color: #e74c3c;
+  color: #e74c3c; /* price in red */
   font-weight: bold;
   font-size: 1rem;
 }
@@ -97,7 +125,7 @@ main section h2 {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: var(--primary, #ff6600);
+  background: #e74c3c;
   border: none;
   border-radius: 50%;
   width: 60px;
@@ -133,8 +161,9 @@ main section h2 {
 }
 #cart-items div {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 10px;
   margin-bottom: 8px;
   word-break: break-word;
 }
@@ -142,22 +171,34 @@ main section h2 {
   width: 30px;
   height: 30px;
   font-size: 1rem;
-  margin-left: 5px;
-  margin-right: 5px;
   border-radius: 50%;
   border: none;
-  background: var(--primary, #ff6600);
+  background: #e74c3c;
   color: #fff;
   cursor: pointer;
 }
+/* Quantity display between buttons */
+#cart-items div span.qty {
+  min-width: 25px;
+  text-align: center;
+  font-weight: bold;
+}
 
-#cart-content button {
+/* Cart Checkout Button */
+#cart-content button.checkout {
   width: 100%;
   padding: 12px;
   border: none;
   border-radius: 12px;
-  background: var(--primary, #ff6600);
+  background: #e74c3c;      /* or #e74c3c if you want red */
   color: #fff;
-  margin-top: 10px;
+  font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+#cart-content button.checkout:hover {
+  background: #e74c3c;
+  transform: scale(1.02);
 }
