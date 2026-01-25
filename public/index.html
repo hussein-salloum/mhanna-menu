@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مطعم المنقل</title>
+  
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>مطعم المنقل</h1>
+  </header>
+
+  <!-- Category Buttons -->
+  <div id="filters" class="categories"></div>
+
+  <!-- Menu Items -->
+  <main id="menu"></main>
+
+  <!-- Floating Cart Button -->
+  <button id="cart-button" onclick="openCart()">🍽️</button>
+
+  <!-- Cart Popup Modal -->
+  <div id="cart-modal" onclick="closeCart(event)">
+    <div id="cart-content">
+      <h3>طلبك</h3>
+      <div id="cart-items"></div>
+      <div style="margin-top:10px; font-weight:bold;">
+        الإجمالي: <span id="total">0</span> L.L.
+      </div>
+      <button onclick="checkout()">طلب عبر WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+:root {
+  --primary: #e63946; /* branding color */
+  --secondary: #f1faee;
+  --dark: #1d3557;
+  --light: #fff;
+}
+
+body {
+  font-family: "Cairo", sans-serif;
+  margin:0; background: var(--secondary); color: var(--dark);
+}
+
+header { background: var(--primary); color: var(--light); padding: 20px; text-align:center; display:flex; align-items:center; justify-content:center; gap:15px;}
+header h1 { margin:0; font-size:2rem;}
+
+main { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; padding:20px;}
+.card { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column; transition:.2s;}
+.card:hover { transform:translateY(-4px);}
+.card img { width:100%; height:180px; object-fit:cover;}
+.card h3 { margin:12px; font-size:1.1rem;}
+.card p { margin:0 12px 10px; color:#666;}
+.card strong { margin:0 12px 10px; font-size:1rem;}
+.card button { margin:12px; padding:10px; border:none; border-radius:10px; background:var(--primary); color:#fff; cursor:pointer;}
+
+#filters { display:flex; gap:10px; padding:15px; overflow-x:auto; background:#fff;}
+#filters button { border:none; padding:8px 16px; border-radius:20px; background:#eee; cursor:pointer; white-space:nowrap; transition:.2s;}
+#filters button:hover { background: var(--primary); color:#fff;}
+
+/* Floating order button */
+#cart-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--primary);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Cart modal remains the same */
+#cart-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+#cart-content {
+  background: #fff;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 20px;
+  padding: 20px;
+}
+#cart-items div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+#cart-content button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary);
+  color: #fff;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+footer { text-align:center; padding:15px; background: var(--dark); color: #fff; margin-top:30px;}
+
+main section {
+  margin-bottom: 40px;
+}
+
+main section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 5px;
+}

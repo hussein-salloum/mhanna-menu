@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة إدارة مطعم المنقل</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<script>
+  const pass = prompt("كلمة المرور:");
+  if (pass !== "admin123") location.href = "/";
+</script>
+
+<header>
+  <h1>لوحة إدارة مطعم المنقل</h1>
+</header>
+
+<main>
+  <form id="itemForm">
+    <input type="text" placeholder="اسم الطبق" required>
+    <input type="text" placeholder="الوصف" required>
+    <input type="number" placeholder="السعر" step="0.01" required>
+    <input type="text" placeholder="الفئة" required>
+    <input type="file" id="imageInput">
+    <button type="submit">حفظ</button>
+  </form>
+
+  <div id="adminItems"></div>
+</main>
+
+<script src="admin.js"></script>
+</body>
+</html>
