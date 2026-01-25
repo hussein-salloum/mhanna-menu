@@ -45,19 +45,20 @@ function renderMenu(items) {
     const section = document.createElement("section");
     section.id = cat;
     section.innerHTML = `<h2>${cat}</h2>`;
+    section.style.backgroundImage = `url('/img/${cat}.jpg')`;
+
 
     grouped[cat].forEach(item => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <img src="${item.image}" />
-        <div class="card-info">
-          <h3>${item.name}</h3>
-          <p>${item.description || ""}</p>
-          <strong>${format(item.price)} L.L.</strong>
-        </div>
-      `;
-      card.onclick = () => addToCart(item);
+const card = document.createElement("div");
+card.className = "card";
+card.innerHTML = `
+  <div class="card-info">
+    <h3>${item.name}</h3>
+    <p>${item.description || ""}</p>
+  </div>
+  <div class="card-price">${format(item.price)} L.L.</div>
+`;
+card.onclick = () => addToCart(item);
       section.appendChild(card);
     });
 

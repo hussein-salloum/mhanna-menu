@@ -1,3 +1,4 @@
+/* ---------- GLOBAL ---------- */
 body {
   font-family: 'Changa', sans-serif;
   margin: 0;
@@ -5,17 +6,26 @@ body {
   direction: rtl;
 }
 
-/* Header */
-header {
+/* ---------- HEADER ---------- */
+.main-header {
   background: #e74c3c;
   color: #fff;
   text-align: center;
-  padding: 12px;
-  font-size: 1.4rem;
+  padding: 12px 10px;
+}
+
+.main-header .title {
+  font-size: 1.3rem;
   font-weight: 700;
 }
 
-/* Categories */
+.main-header .phone {
+  font-size: 0.95rem;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+/* ---------- CATEGORY FILTERS (UNCHANGED) ---------- */
 .categories-wrapper {
   display: flex;
   align-items: center;
@@ -54,43 +64,71 @@ header {
   cursor: pointer;
 }
 
-/* Menu */
+/* ---------- CATEGORY SECTIONS ---------- */
 main section {
-  padding: 16px;
-}
-main h2 {
-  margin-bottom: 10px;
-  border-bottom: 2px solid #e74c3c;
+  padding: 28px 16px 20px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
 }
 
-/* Card */
-/* Menu Cards */
-main section { padding: 20px; }
-main section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #ff6600;
-  padding-bottom: 5px;
+main section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.88);
 }
+
+main section > * {
+  position: relative;
+}
+
+main section h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e74c3c;
+  margin-bottom: 18px;
+}
+
+/* ---------- MENU CARD (NO IMAGE) ---------- */
 .card {
   display: flex;
-  gap: 15px;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
   background: #fff;
-  margin: 10px 0;
-  padding: 15px;
-  border-radius: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
   cursor: pointer;
-  transition: transform 0.2s;
 }
-.card:hover { transform: scale(1.02); }
-.card img { width: 120px; height: 120px; object-fit: cover; border-radius: 10px; }
-.card-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
-.card-info p { font-size: 0.9rem; color: #555; margin:0 0 10px 0; line-height:1.2; }
-.card-info strong { color: #e74c3c; font-weight:bold; font-size:1rem; }
 
-/* Cart Button */
+.card-info {
+  max-width: 75%;
+}
+
+.card-info h3 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.card-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.card-price {
+  color: #e74c3c;
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+/* ---------- CART BUTTON ---------- */
 #cart-button {
   position: fixed;
   bottom: 20px;
@@ -103,6 +141,7 @@ main section h2 {
   color: #fff;
   font-size: 26px;
   cursor: pointer;
+  z-index: 1000;
 }
 
 .cart-badge {
@@ -120,7 +159,7 @@ main section h2 {
   justify-content: center;
 }
 
-/* Cart Popup */
+/* ---------- CART POPUP ---------- */
 #cart-modal {
   position: fixed;
   inset: 0;
@@ -128,7 +167,9 @@ main section h2 {
   display: none;
   align-items: center;
   justify-content: center;
+  z-index: 2000;
 }
+
 #cart-content {
   background: #fff;
   width: 90%;
@@ -137,6 +178,12 @@ main section h2 {
   padding: 18px;
 }
 
+#cart-content h3 {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* ---------- CART ROW ---------- */
 .cart-row {
   display: grid;
   grid-template-columns: 1fr auto auto auto;
@@ -146,6 +193,17 @@ main section h2 {
   border-bottom: 1px solid #eee;
 }
 
+.cart-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cart-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .cart-controls button {
   background: #e74c3c;
   color: #fff;
@@ -153,19 +211,29 @@ main section h2 {
   width: 26px;
   height: 26px;
   border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.cart-controls .qty {
+  min-width: 22px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .cart-price {
-  color: #e74c3c;
   font-weight: bold;
+  color: #e74c3c;
+  font-size: 0.9rem;
 }
 
 .delete-item {
   cursor: pointer;
+  font-size: 1.1rem;
   color: #e74c3c;
 }
 
-/* Checkout */
+/* ---------- CHECKOUT BUTTON ---------- */
 .checkout {
   width: 100%;
   background: #e74c3c;
@@ -173,11 +241,16 @@ main section h2 {
   border: none;
   padding: 12px;
   border-radius: 12px;
-  margin-top: 12px;
+  margin-top: 14px;
   font-weight: 700;
+  cursor: pointer;
 }
 
-/* Footer */
+.checkout:hover {
+  background: #cf3e2e;
+}
+
+/* ---------- FOOTER ---------- */
 footer {
   text-align: center;
   padding: 15px 10px;
@@ -185,5 +258,4 @@ footer {
   color: #777;
   font-size: 0.85rem;
   border-top: 1px solid #eee;
-  margin-top: 30px;
-} 
+}
