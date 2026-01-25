@@ -1,37 +1,103 @@
-:root {
-  --primary: #e63946; /* branding color */
-  --secondary: #f1faee;
-  --dark: #1d3557;
-  --light: #fff;
-}
-
+/* General */
 body {
-  font-family: "Cairo", sans-serif;
-  margin:0; background: var(--secondary); color: var(--dark);
+  font-family: 'Changa', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fafafa;
+  direction: rtl;
 }
 
-header { background: var(--primary); color: var(--light); padding: 20px; text-align:center; display:flex; align-items:center; justify-content:center; gap:15px;}
-header h1 { margin:0; font-size:2rem;}
+/* Header */
+header {
+  text-align: center;
+  padding: 15px;
+  background: var(--primary, #ff6600);
+  color: #fff;
+  font-size: 1.8rem;
+}
 
-main { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; padding:20px;}
-.card { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column; transition:.2s;}
-.card:hover { transform:translateY(-4px);}
-.card img { width:100%; height:180px; object-fit:cover;}
-.card h3 { margin:12px; font-size:1.1rem;}
-.card p { margin:0 12px 10px; color:#666;}
-.card strong { margin:0 12px 10px; font-size:1rem;}
-.card button { margin:12px; padding:10px; border:none; border-radius:10px; background:var(--primary); color:#fff; cursor:pointer;}
+/* Categories */
+.categories {
+  display: flex;
+  overflow-x: auto;
+  padding: 15px;
+  gap: 15px;
+  background: #fff;
+  border-bottom: 2px solid #eee;
+}
+.categories button {
+  flex: none;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  background: var(--primary, #ff6600);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+.categories button:hover {
+  background: #e65c00;
+  transform: scale(1.05);
+}
 
-#filters { display:flex; gap:10px; padding:15px; overflow-x:auto; background:#fff;}
-#filters button { border:none; padding:8px 16px; border-radius:20px; background:#eee; cursor:pointer; white-space:nowrap; transition:.2s;}
-#filters button:hover { background: var(--primary); color:#fff;}
+/* Menu Sections */
+main section {
+  padding: 20px;
+}
+main section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--primary, #ff6600);
+  padding-bottom: 5px;
+}
 
-/* Floating order button */
+/* Card */
+.card {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  background: #fff;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.card:hover {
+  transform: scale(1.02);
+}
+.card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.card-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+}
+.card-info p {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+.card-info strong {
+  color: #e74c3c;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Floating Cart Button */
 #cart-button {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: var(--primary);
+  background: var(--primary, #ff6600);
   border: none;
   border-radius: 50%;
   width: 60px;
@@ -46,7 +112,7 @@ main { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); g
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Cart modal remains the same */
+/* Cart Modal */
 #cart-modal {
   position: fixed;
   inset: 0;
@@ -62,32 +128,36 @@ main { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); g
   max-width: 400px;
   border-radius: 20px;
   padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 #cart-items div {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 8px;
+  word-break: break-word;
 }
+#cart-items div button {
+  width: 30px;
+  height: 30px;
+  font-size: 1rem;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary, #ff6600);
+  color: #fff;
+  cursor: pointer;
+}
+
 #cart-content button {
   width: 100%;
   padding: 12px;
   border: none;
   border-radius: 12px;
-  background: var(--primary);
+  background: var(--primary, #ff6600);
   color: #fff;
   margin-top: 10px;
   cursor: pointer;
-}
-
-footer { text-align:center; padding:15px; background: var(--dark); color: #fff; margin-top:30px;}
-
-main section {
-  margin-bottom: 40px;
-}
-
-main section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  border-bottom: 2px solid var(--primary);
-  padding-bottom: 5px;
 }

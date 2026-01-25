@@ -1,22 +1,23 @@
-// ---------- Global Variables ----------
 let menu = [];
 let cart = {};
 let categories = [];
 
-// ---------- Fetch items from server ----------
+// ---------- Fetch items ----------
 fetch("/api/items")
   .then(res => res.json())
   .then(data => {
     menu = data;
-
-    // Get unique categories sorted alphabetically
     categories = [...new Set(menu.map(i => i.category))].sort();
-
     renderCategories();
     renderMenu(menu);
   });
 
-// ---------- Render Top Category Buttons ----------
+// ---------- Format numbers with commas ----------
+function formatCurrency(num) {
+  return num.toLocaleString('en-US');
+}
+
+// ---------- Render Categories ----------
 function renderCategories() {
   const container = document.getElementById("filters");
   container.innerHTML = "";
@@ -29,7 +30,7 @@ function renderCategories() {
   });
 }
 
-// ---------- Render Menu by Category ----------
+// ---------- Render Menu ----------
 function renderMenu(items) {
   const container = document.getElementById("menu");
   container.innerHTML = "";
@@ -38,26 +39,23 @@ function renderMenu(items) {
     const section = document.createElement("section");
     section.id = `cat-${cat}`;
 
-    // Category title
     const h2 = document.createElement("h2");
     h2.textContent = cat;
     section.appendChild(h2);
 
-    // Items in this category
     const catItems = items.filter(i => i.category === cat);
     catItems.forEach(item => {
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
         <img src="${item.image_url}" alt="${item.name}">
-        <h3>${item.name}</h3>
-        <p>${item.description}</p>
-        <strong>${item.price} L.L.</strong>
+        <div class="card-info">
+          <h3>${item.name}</h3>
+          <p>${item.description}</p>
+          <strong>${formatCurrency(item.price)} L.L.</strong>
+        </div>
       `;
-
-      // Click card to add item silently (no popup)
       card.onclick = () => addToCart(item.id);
-
       section.appendChild(card);
     });
 
@@ -71,13 +69,12 @@ function scrollToCategory(category) {
   if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// ---------- Cart Functions ----------
+// ---------- Cart ----------
 function addToCart(id) {
   const item = menu.find(i => i.id === id);
   if (!cart[id]) cart[id] = { ...item, qty: 1 };
   else cart[id].qty++;
-
-  renderCart(); // silently update cart, but don't open popup
+  renderCart();
 }
 
 function openCart() {
@@ -98,14 +95,14 @@ function renderCart() {
     const div = document.createElement("div");
     div.innerHTML = `
       <span>${item.name} × ${item.qty}</span>
-      <span>${(item.price * item.qty).toFixed(0)} L.L.</span>
+      <span>${formatCurrency(item.price * item.qty)} L.L.</span>
       <button onclick="changeQty('${item.id}', -1)">-</button>
       <button onclick="changeQty('${item.id}', 1)">+</button>
     `;
     cartItems.appendChild(div);
   });
 
-  document.getElementById("total").textContent = total.toFixed(0);
+  document.getElementById("total").textContent = formatCurrency(total);
 }
 
 function changeQty(id, delta) {
@@ -128,9 +125,9 @@ function checkout() {
     message += `${item.name} × ${item.qty}\n`;
     total += item.price * item.qty;
   });
-  message += `\nالإجمالي: ${total.toFixed(0)} L.L.`;
+  message += `\nالإجمالي: ${formatCurrency(total)} L.L.`;
 
-  const phone = "965XXXXXXXX"; // <-- ضع رقمك هنا
+  const phone = "965XXXXXXXX"; // ضع رقمك هنا
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
 }
