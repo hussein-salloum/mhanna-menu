@@ -128,7 +128,8 @@ function checkout() {
   });
   message += `\nالإجمالي: ${formatCurrency(total)} L.L.`;
 
-  const phone = "0096170989802"; // ضع رقمك هنا
+  // Use your WhatsApp number here in international format
+  const phone = "96170320107"; 
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
 }
