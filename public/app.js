@@ -126,7 +126,7 @@ function checkout() {
 
   msg += `\nالإجمالي: ${format(total)} L.L.`;
   window.open(
-    `https://wa.me/96170123456?text=${encodeURIComponent(msg)}`,
+    `https://wa.me/96170320107?text=${encodeURIComponent(msg)}`,
     "_blank"
   );
 }

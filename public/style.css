@@ -64,25 +64,31 @@ main h2 {
 }
 
 /* Card */
+/* Menu Cards */
+main section { padding: 20px; }
+main section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ff6600;
+  padding-bottom: 5px;
+}
 .card {
   display: flex;
-  gap: 14px;
+  gap: 15px;
+  align-items: flex-start;
   background: #fff;
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   cursor: pointer;
+  transition: transform 0.2s;
 }
-.card img {
-  width: 110px;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-.card-info strong {
-  color: #e74c3c;
-}
+.card:hover { transform: scale(1.02); }
+.card img { width: 120px; height: 120px; object-fit: cover; border-radius: 10px; }
+.card-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
+.card-info p { font-size: 0.9rem; color: #555; margin:0 0 10px 0; line-height:1.2; }
+.card-info strong { color: #e74c3c; font-weight:bold; font-size:1rem; }
 
 /* Cart Button */
 #cart-button {
@@ -170,3 +176,14 @@ main h2 {
   margin-top: 12px;
   font-weight: 700;
 }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 15px 10px;
+  background: #fff;
+  color: #777;
+  font-size: 0.85rem;
+  border-top: 1px solid #eee;
+  margin-top: 30px;
+} 
