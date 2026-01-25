@@ -1,45 +1,41 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>مطعم المنقل</title>
-  
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;700&display=swap" rel="stylesheet">
-  
-  <!-- CSS -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <h1>مطعم المنقل</h1>
-  </header>
 
-  <!-- Category Buttons -->
-  <div id="filters" class="categories"></div>
+<header>مطعم المنقل</header>
 
-  <!-- Menu Items -->
-  <main id="menu"></main>
+<!-- Categories -->
+<div class="categories-wrapper">
+  <button class="scroll-btn" onclick="scrollCategories(-1)">❮</button>
+  <div class="categories" id="categories"></div>
+  <button class="scroll-btn" onclick="scrollCategories(1)">❯</button>
+</div>
 
-  <!-- Floating Cart Button -->
-  <button id="cart-button" onclick="openCart()">🍽️</button>
+<main id="menu"></main>
 
-  <!-- Cart Popup Modal -->
-  <div id="cart-modal" onclick="closeCart(event)">
-    <div id="cart-content">
-      <h3>طلبك</h3>
-      <div id="cart-items"></div>
-      <div style="margin-top:10px; font-weight:bold;">
-        الإجمالي: <span id="total">0</span> L.L.
-      </div>
-      <button class="checkout" onclick="checkout()">طلب عبر WhatsApp</button>
-    </div>
+<!-- Cart Button -->
+<button id="cart-button">
+  🍽️
+  <span id="cart-count" class="cart-badge">0</span>
+</button>
+
+<!-- Cart Popup -->
+<div id="cart-modal">
+  <div id="cart-content">
+    <h3>طلبك</h3>
+    <div id="cart-items"></div>
+    <button class="checkout" onclick="checkout()">طلب عبر WhatsApp</button>
   </div>
+</div>
 
-  <!-- JS -->
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

@@ -1,135 +1,151 @@
-let menu = [];
 let cart = {};
-let categories = [];
 
-// ---------- Fetch items ----------
-fetch("/api/items")
-  .then(res => res.json())
-  .then(data => {
-    menu = data;
-    categories = [...new Set(menu.map(i => i.category))].sort();
-    renderCategories();
-    renderMenu(menu);
-  });
+// ---------------- LOAD MENU ----------------
+async function loadMenu() {
+  const res = await fetch("/api/items");
+  const items = await res.json();
 
-// ---------- Format numbers with commas ----------
-function formatCurrency(num) {
-  return num.toLocaleString('en-US');
+  const categories = [...new Set(items.map(i => i.category))];
+  renderCategories(categories);
+  renderMenu(items);
 }
 
-// ---------- Render Categories ----------
-function renderCategories() {
-  const container = document.getElementById("filters");
-  container.innerHTML = "";
-
+// ---------------- CATEGORIES ----------------
+function renderCategories(categories) {
+  const el = document.getElementById("categories");
+  el.innerHTML = "";
   categories.forEach(cat => {
     const btn = document.createElement("button");
     btn.textContent = cat;
-    btn.onclick = () => scrollToCategory(cat);
-    container.appendChild(btn);
+    btn.onclick = () => {
+      const section = document.getElementById(cat);
+      if (section) section.scrollIntoView({ behavior: "smooth" });
+    };
+    el.appendChild(btn);
   });
 }
 
-// ---------- Render Menu ----------
+function scrollCategories(dir) {
+  document.querySelector(".categories")
+    .scrollBy({ left: dir * 160, behavior: "smooth" });
+}
+
+// ---------------- MENU ----------------
 function renderMenu(items) {
-  const container = document.getElementById("menu");
-  container.innerHTML = "";
+  const menu = document.getElementById("menu");
+  menu.innerHTML = "";
 
-  categories.forEach(cat => {
+  const grouped = {};
+  items.forEach(i => {
+    if (!grouped[i.category]) grouped[i.category] = [];
+    grouped[i.category].push(i);
+  });
+
+  for (const cat in grouped) {
     const section = document.createElement("section");
-    section.id = `cat-${cat}`;
+    section.id = cat;
+    section.innerHTML = `<h2>${cat}</h2>`;
 
-    const h2 = document.createElement("h2");
-    h2.textContent = cat;
-    section.appendChild(h2);
-
-    const catItems = items.filter(i => i.category === cat);
-    catItems.forEach(item => {
+    grouped[cat].forEach(item => {
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <img src="${item.image_url}" alt="${item.name}">
+        <img src="${item.image}" />
         <div class="card-info">
           <h3>${item.name}</h3>
-          <p>${item.description}</p>
-          <strong>${formatCurrency(item.price)} L.L.</strong>
+          <p>${item.description || ""}</p>
+          <strong>${format(item.price)} L.L.</strong>
         </div>
       `;
-      card.onclick = () => addToCart(item.id);
+      card.onclick = () => addToCart(item);
       section.appendChild(card);
     });
 
-    container.appendChild(section);
-  });
+    menu.appendChild(section);
+  }
 }
 
-// ---------- Scroll to Category ----------
-function scrollToCategory(category) {
-  const section = document.getElementById(`cat-${category}`);
-  if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-// ---------- Cart ----------
-function addToCart(id) {
-  const item = menu.find(i => i.id === id);
-  if (!cart[id]) cart[id] = { ...item, qty: 1 };
-  else cart[id].qty++;
+// ---------------- CART ----------------
+function addToCart(item) {
+  if (cart[item.id]) cart[item.id].qty++;
+  else cart[item.id] = { ...item, qty: 1 };
   renderCart();
 }
 
-function openCart() {
-  document.getElementById("cart-modal").style.display = "flex";
-}
-
-function closeCart(e) {
-  if (e.target.id === "cart-modal") e.target.style.display = "none";
-}
-
-function renderCart() {
-  const cartItems = document.getElementById("cart-items");
-  cartItems.innerHTML = "";
-  let total = 0;
-
-Object.values(cart).forEach(item => {
-  total += item.price * item.qty;
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <span>${item.name}</span>
-    <button onclick="changeQty('${item.id}', -1)">-</button>
-    <span class="qty">${item.qty}</span>
-    <button onclick="changeQty('${item.id}', 1)">+</button>
-    <span>${formatCurrency(item.price * item.qty)} L.L.</span>
-  `;
-  cartItems.appendChild(div);
-});
-
-  document.getElementById("total").textContent = formatCurrency(total);
-}
-
-function changeQty(id, delta) {
-  if (!cart[id]) return;
-  cart[id].qty += delta;
+function changeQty(id, d) {
+  cart[id].qty += d;
   if (cart[id].qty <= 0) delete cart[id];
   renderCart();
 }
 
-// ---------- WhatsApp Checkout ----------
-function checkout() {
-  if (Object.keys(cart).length === 0) {
-    alert("السلة فارغة!");
-    return;
-  }
+function removeItem(id) {
+  delete cart[id];
+  renderCart();
+}
 
-  let message = "طلب من مطعم المنقل:\n\n";
+function renderCart() {
+  const el = document.getElementById("cart-items");
+  el.innerHTML = "";
+
   let total = 0;
   Object.values(cart).forEach(item => {
-    message += `${item.name} × ${item.qty}\n`;
     total += item.price * item.qty;
-  });
-  message += `\nالإجمالي: ${formatCurrency(total)} L.L.`;
 
-  // Use your WhatsApp number here in international format
-  const phone = "96170320107"; 
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");
+    const row = document.createElement("div");
+    row.className = "cart-row";
+    row.innerHTML = `
+      <div class="cart-name">${item.name}</div>
+
+      <div class="cart-controls">
+        <button onclick="changeQty('${item.id}',-1)">−</button>
+        <span class="qty">${item.qty}</span>
+        <button onclick="changeQty('${item.id}',1)">+</button>
+      </div>
+
+      <div class="cart-price">${format(item.price * item.qty)} L.L.</div>
+      <div class="delete-item" onclick="removeItem('${item.id}')">🗑️</div>
+    `;
+    el.appendChild(row);
+  });
+
+  document.getElementById("cart-count").textContent =
+    Object.values(cart).reduce((s, i) => s + i.qty, 0);
 }
+
+// ---------------- WHATSAPP ----------------
+function checkout() {
+  if (!Object.keys(cart).length) return alert("السلة فارغة");
+
+  let msg = "طلب من مطعم المنقل:\n\n";
+  let total = 0;
+
+  Object.values(cart).forEach(i => {
+    msg += `${i.name} × ${i.qty}\n`;
+    total += i.price * i.qty;
+  });
+
+  msg += `\nالإجمالي: ${format(total)} L.L.`;
+  window.open(
+    `https://wa.me/96170123456?text=${encodeURIComponent(msg)}`,
+    "_blank"
+  );
+}
+
+// ---------------- HELPERS ----------------
+function format(n) {
+  return n.toLocaleString("en-US");
+}
+
+// ---------------- POPUP ----------------
+const modal = document.getElementById("cart-modal");
+document.getElementById("cart-button").onclick = () => modal.style.display = "flex";
+modal.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+// expose
+window.changeQty = changeQty;
+window.removeItem = removeItem;
+window.checkout = checkout;
+window.scrollCategories = scrollCategories;
+
+// init
+loadMenu();
