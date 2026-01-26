@@ -3,30 +3,45 @@ let cart = {};
 // ---------------- LOAD MENU ----------------
 async function loadMenu() {
   const res = await fetch("/api/items");
-  const items = await res.json();
+  let items = await res.json();
 
-  const categories = [...new Set(items.map(i => i.category))];
-  renderCategories(categories);
+  // SAFETY: ensure correct order (even if backend forgets ORDER BY)
+  items.sort((a, b) => {
+    if (a.category_order !== b.category_order) {
+      return a.category_order - b.category_order;
+    }
+    return a.item_order - b.item_order;
+  });
+
+  renderCategories(items);
   renderMenu(items);
 }
 
 // ---------------- CATEGORIES ----------------
-function renderCategories(categories) {
+function renderCategories(items) {
   const el = document.getElementById("categories");
   el.innerHTML = "";
-  categories.forEach(cat => {
+
+  const seen = new Set();
+
+  items.forEach(item => {
+    if (seen.has(item.category)) return;
+    seen.add(item.category);
+
     const btn = document.createElement("button");
-    btn.textContent = cat;
+    btn.textContent = item.category;
     btn.onclick = () => {
-      const section = document.getElementById(cat);
+      const section = document.getElementById(item.category);
       if (section) section.scrollIntoView({ behavior: "smooth" });
     };
+
     el.appendChild(btn);
   });
 }
 
 function scrollCategories(dir) {
-  document.querySelector(".categories")
+  document
+    .querySelector(".categories")
     .scrollBy({ left: dir * 160, behavior: "smooth" });
 }
 
@@ -39,7 +54,7 @@ function renderMenu(items) {
   let section = null;
 
   items.forEach(item => {
-    // New category → create section
+    // New category
     if (item.category !== currentCategory) {
       currentCategory = item.category;
 
@@ -65,8 +80,8 @@ function renderMenu(items) {
       </div>
       <div class="card-price">${format(item.price)} L.L.</div>
     `;
-    card.onclick = () => addToCart(item);
 
+    card.onclick = () => addToCart(item);
     section.appendChild(card);
   });
 }
@@ -94,6 +109,7 @@ function renderCart() {
   el.innerHTML = "";
 
   let total = 0;
+
   Object.values(cart).forEach(item => {
     total += item.price * item.qty;
 
@@ -111,6 +127,7 @@ function renderCart() {
       <div class="cart-price">${format(item.price * item.qty)} L.L.</div>
       <div class="delete-item" onclick="removeItem('${item.id}')">🗑️</div>
     `;
+
     el.appendChild(row);
   });
 
@@ -131,6 +148,7 @@ function checkout() {
   });
 
   msg += `\nالإجمالي: ${format(total)} L.L.`;
+
   window.open(
     `https://wa.me/96170320107?text=${encodeURIComponent(msg)}`,
     "_blank"
@@ -144,8 +162,12 @@ function format(n) {
 
 // ---------------- POPUP ----------------
 const modal = document.getElementById("cart-modal");
-document.getElementById("cart-button").onclick = () => modal.style.display = "flex";
-modal.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+document.getElementById("cart-button").onclick =
+  () => (modal.style.display = "flex");
+
+modal.onclick = e => {
+  if (e.target === modal) modal.style.display = "none";
+};
 
 // expose
 window.changeQty = changeQty;
@@ -155,5 +177,3 @@ window.scrollCategories = scrollCategories;
 
 // init
 loadMenu();
-
-
