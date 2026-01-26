@@ -289,3 +289,26 @@ footer {
   font-size: 0.85rem;
   border-top: 1px solid #eee;
 }
+
+
+.qr-page {
+  text-align: center;
+  padding: 40px 20px;
+  font-family: 'Changa', sans-serif;
+}
+
+.qr-page h2 {
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.qr-image {
+  max-width: 220px;
+  width: 100%;
+}
+
+.qr-note {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #666;
+}
