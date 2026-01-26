@@ -44,21 +44,28 @@ function renderMenu(items) {
   for (const cat in grouped) {
     const section = document.createElement("section");
     section.id = cat;
-    section.innerHTML = `<h2>${cat}</h2>`;
-    section.style.backgroundImage = `url('/img/${cat}.jpg')`;
 
+    // add data-bg for stretched category background
+    section.setAttribute("data-bg", `/img/${cat}.jpg`);
 
+    // category title with background
+    const title = document.createElement("h2");
+    title.textContent = cat;
+    title.style.backgroundImage = `url('/img/${cat}.jpg')`;
+    section.appendChild(title);
+
+    // items cards
     grouped[cat].forEach(item => {
-const card = document.createElement("div");
-card.className = "card";
-card.innerHTML = `
-  <div class="card-info">
-    <h3>${item.name}</h3>
-    <p>${item.description || ""}</p>
-  </div>
-  <div class="card-price">${format(item.price)} L.L.</div>
-`;
-card.onclick = () => addToCart(item);
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-info">
+          <h3>${item.name}</h3>
+          <p>${item.description || ""}</p>
+        </div>
+        <div class="card-price">${format(item.price)} L.L.</div>
+      `;
+      card.onclick = () => addToCart(item);
       section.appendChild(card);
     });
 
@@ -150,3 +157,5 @@ window.scrollCategories = scrollCategories;
 
 // init
 loadMenu();
+
+
