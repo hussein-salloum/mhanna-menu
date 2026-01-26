@@ -35,42 +35,40 @@ function renderMenu(items) {
   const menu = document.getElementById("menu");
   menu.innerHTML = "";
 
-  const grouped = {};
-  items.forEach(i => {
-    if (!grouped[i.category]) grouped[i.category] = [];
-    grouped[i.category].push(i);
+  let currentCategory = null;
+  let section = null;
+
+  items.forEach(item => {
+    // New category → create section
+    if (item.category !== currentCategory) {
+      currentCategory = item.category;
+
+      section = document.createElement("section");
+      section.id = currentCategory;
+      section.setAttribute("data-bg", `/img/${currentCategory}.jpg`);
+
+      const title = document.createElement("h2");
+      title.textContent = currentCategory;
+      title.style.backgroundImage = `url('/img/${currentCategory}.jpg')`;
+
+      section.appendChild(title);
+      menu.appendChild(section);
+    }
+
+    // Item card
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-info">
+        <h3>${item.name}</h3>
+        <p>${item.description || ""}</p>
+      </div>
+      <div class="card-price">${format(item.price)} L.L.</div>
+    `;
+    card.onclick = () => addToCart(item);
+
+    section.appendChild(card);
   });
-
-  for (const cat in grouped) {
-    const section = document.createElement("section");
-    section.id = cat;
-
-    // add data-bg for stretched category background
-    section.setAttribute("data-bg", `/img/${cat}.jpg`);
-
-    // category title with background
-    const title = document.createElement("h2");
-    title.textContent = cat;
-    title.style.backgroundImage = `url('/img/${cat}.jpg')`;
-    section.appendChild(title);
-
-    // items cards
-    grouped[cat].forEach(item => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="card-info">
-          <h3>${item.name}</h3>
-          <p>${item.description || ""}</p>
-        </div>
-        <div class="card-price">${format(item.price)} L.L.</div>
-      `;
-      card.onclick = () => addToCart(item);
-      section.appendChild(card);
-    });
-
-    menu.appendChild(section);
-  }
 }
 
 // ---------------- CART ----------------
