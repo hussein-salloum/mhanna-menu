@@ -9,7 +9,7 @@
 <body>
 
 <!-- LOGIN MODAL -->
-<div id="loginModal" class="modal">
+<div id="loginModal" class="modal" style="display: flex;">
   <div class="modal-content">
     <h2>Admin Login</h2>
     <input type="text" id="user" placeholder="Username">
@@ -29,7 +29,7 @@
     <button id="addItemBtn">+ Add Item</button>
   </header>
 
-  <!-- TABLE FOR DESKTOP -->
+  <!-- DESKTOP TABLE -->
   <table id="itemsTable">
     <thead>
       <tr>
@@ -43,12 +43,12 @@
     <tbody id="items"></tbody>
   </table>
 
-  <!-- CARDS FOR MOBILE -->
+  <!-- MOBILE CARDS -->
   <div id="itemsCards" class="cards"></div>
 </div>
 
-<!-- ADD / EDIT ITEM MODAL -->
-<div id="formModal" class="modal">
+<!-- ADD / EDIT MODAL -->
+<div id="formModal" class="modal" style="display: none;">
   <div class="modal-content">
     <h2 id="formTitle">Add Item</h2>
     <input type="text" id="name" placeholder="Name">
