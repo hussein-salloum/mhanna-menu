@@ -203,10 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
   async function reorderSequential() {
     try {
       const rows = itemsTbody.querySelectorAll("tr");
-      const updates = Array.from(rows).map((tr, index) => ({
-        id: tr.dataset.id,
-        item_order: index + 1
-      }));
+const updates = Array.from(rows).map((tr, index) => ({
+  id: Number(tr.dataset.id), // convert string to number
+  item_order: index + 1
+}));
+
       console.log("Reorder payload:", updates);
 
       const res = await fetch("/api/items/reorder", {
