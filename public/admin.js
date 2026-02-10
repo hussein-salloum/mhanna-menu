@@ -57,16 +57,17 @@ async function loadItems() {
     tr.dataset.category_order = item.category_order;
     tr.draggable = true;
 
-    tr.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.category}</td>
-      <td>${item.price}</td>
-      <td>${item.description || ""}</td>
-      <td>
-        <button class="editBtn">✏️</button>
-        <button class="deleteBtn">🗑</button>
-      </td>
-    `;
+tr.innerHTML = `
+  <td data-label="Name">${item.name}</td>
+  <td data-label="Category">${item.category}</td>
+  <td data-label="Price">${item.price}</td>
+  <td data-label="Description">${item.description || ""}</td>
+  <td data-label="Actions">
+    <button class="editBtn">✏️</button>
+    <button class="deleteBtn">🗑</button>
+  </td>
+`;
+
 
     enableDrag(tr);
     itemsTable.appendChild(tr);

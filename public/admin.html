@@ -9,15 +9,19 @@
 <body>
 
 <!-- LOGIN MODAL -->
-<div id="loginModal" class="modal">
-  <div class="modal-content">
-    <h3>Admin Login</h3>
-    <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
-    <button id="loginBtn">Login</button>
-    <p id="loginError" style="color:red"></p>
+<div id="loginModal">
+  <div class="login-content">
+    <h2>Admin Login</h2>
+    <input type="text" id="user" placeholder="Username">
+    <input type="password" id="pass" placeholder="Password">
+    <div class="login-buttons">
+      <button id="loginBtn">Login</button>
+      <button id="cancelLoginBtn">Cancel</button>
+    </div>
+    <p id="loginError" class="error-text"></p>
   </div>
 </div>
+
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" hidden>
@@ -37,18 +41,20 @@
 </div>
 
 <!-- ADD / EDIT MODAL -->
-<div id="formModal" class="modal" style="display:none">
-  <div class="modal-content">
-    <h3 id="formTitle"></h3>
-    <input id="name" placeholder="Name">
-    <input id="category" placeholder="Category">
-    <input id="price" placeholder="Price">
-    <textarea id="description" placeholder="Description"></textarea>
-    <button id="saveBtn">Save</button>
-    <button type="button" id="cancelBtn">Cancel</button>
-
+<div id="formModal">
+  <div class="form-content">
+    <h2 id="formTitle">Add/Edit Item</h2>
+    <input type="text" id="name" placeholder="Item Name">
+    <input type="text" id="category" placeholder="Category">
+    <input type="number" id="price" placeholder="Price" min="0">
+    <textarea id="description" placeholder="Description (optional)"></textarea>
+    <div class="form-buttons">
+      <button id="saveBtn">Save</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
   </div>
 </div>
+
 
 <script src="/admin.js" defer></script>
 </body>

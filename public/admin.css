@@ -8,21 +8,23 @@ body {
 
 #adminPanel {
   padding: 16px;
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* ---------------- TABLE ---------------- */
+/* ---------------- TABLE (DESKTOP) ---------------- */
 #items {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 16px;
 }
 
 #items th, #items td {
-  padding: 8px 12px;
+  padding: 10px 12px;
   border: 1px solid #ddd;
   text-align: left;
 }
@@ -30,46 +32,75 @@ body {
 #items tr {
   background: #fff;
   transition: background 0.2s;
+  cursor: grab; /* draggable rows */
+  border-radius: 6px;
 }
 
 #items tr:hover {
   background: #f0f0f0;
 }
 
-/* ---------------- BUTTONS ---------------- */
-button {
-  padding: 6px 12px;
-  margin-left: 4px;
-  font-size: 16px;
+#items button {
+  padding: 6px 10px;
+  font-size: 14px;
   border-radius: 6px;
+  border: none;
   cursor: pointer;
-  transition: opacity 0.2s;
 }
 
-button:hover {
-  opacity: 0.8;
+button.editBtn { background-color: #4CAF50; color: white; }
+button.deleteBtn { background-color: #f44336; color: white; }
+
+/* ---------------- TABLE (MOBILE / CARD STYLE) ---------------- */
+@media (max-width: 768px) {
+  #items thead { display: none; }
+
+  #items tr {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 12px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  #items td {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 16px;
+  }
+
+  #items td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    width: 120px;
+  }
+
+  #items td:last-child {
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
 }
 
-button.editBtn {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
+/* ---------------- DRAGGING FEEDBACK ---------------- */
+.dragging {
+  opacity: 0.6;
+  background-color: #e0f7fa !important;
 }
 
-button.deleteBtn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-}
-
+/* Add Item Button */
 #addItemBtn {
-  margin-bottom: 12px;
-  padding: 10px 16px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
   font-size: 16px;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: #2196F3;
   color: white;
   border: none;
+  cursor: pointer;
 }
 
 /* ---------------- FORM MODAL ---------------- */
@@ -77,28 +108,54 @@ button.deleteBtn {
   display: none;
   position: fixed;
   top:0; left:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-#formModal .form-content {
-  background: white;
-  padding: 16px;
-  border-radius: 8px;
+.form-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
   width: 90%;
   max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
 }
 
-#formModal input,
-#formModal textarea {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 4px;
+.form-content h2 {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.form-content input,
+.form-content textarea {
+  margin-bottom: 12px;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
   border: 1px solid #ccc;
 }
+
+.form-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.form-buttons button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+#saveBtn { background-color: #4CAF50; color: white; }
+#cancelBtn { background-color: #ccc; color: black; }
 
 /* ---------------- LOGIN MODAL ---------------- */
 #loginModal {
@@ -107,50 +164,88 @@ button.deleteBtn {
   align-items: center;
   position: fixed;
   top:0; left:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   z-index: 1000;
 }
 
-#loginModal .login-content {
+.login-content {
   background: white;
-  padding: 16px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 12px;
   width: 90%;
   max-width: 350px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
 }
 
-#loginModal input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  border-radius: 4px;
+.login-content h2 {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.login-content input {
+  margin-bottom: 12px;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
   border: 1px solid #ccc;
+}
+
+.login-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.login-buttons button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+#loginBtn { background-color: #2196F3; color: white; }
+#cancelLoginBtn { background-color: #ccc; color: black; }
+
+.error-text {
+  color: red;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 14px;
 }
 
 /* ---------------- MOBILE RESPONSIVE ---------------- */
 @media (max-width: 768px) {
-  #items thead {
-    display: none; /* hide table header on mobile */
-  }
+  /* Table becomes card-style */
+  #items thead { display: none; }
 
   #items tr {
     display: flex;
     flex-direction: column;
     margin-bottom: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
     background: #fff;
   }
 
   #items td {
     display: flex;
     justify-content: space-between;
-    padding: 4px 0;
+    padding: 6px 0;
+    font-size: 16px;
   }
 
   #items td:last-child {
     justify-content: flex-end;
+    margin-top: 6px;
   }
+}
+
+/* Drag hint */
+.dragging {
+  opacity: 0.6;
 }
