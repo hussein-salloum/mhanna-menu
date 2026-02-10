@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginModal = document.getElementById("loginModal");
   const adminPanel = document.getElementById("adminPanel");
   const loginError = document.getElementById("loginError");
-  const itemsTable = document.getElementById("itemsTable");
   const itemsTbody = document.getElementById("items");
   const itemsCards = document.getElementById("itemsCards");
   const loginBtn = document.getElementById("loginBtn");
@@ -24,11 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
   loginBtn.addEventListener("click", async () => {
     const username = document.getElementById("user").value.trim();
     const password = document.getElementById("pass").value.trim();
+
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ username, password })
     });
+
     if (res.ok) {
       loginModal.style.display = "none";
       adminPanel.hidden = false;
@@ -39,14 +40,56 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  document.getElementById("cancelLoginBtn").addEventListener("click", () => {
-    loginModal.style.display = "none";
-  });
+  cancelBtn.addEventListener("click", () => formModal.style.display = "none");
+
+  // ---------------- LOAD ITEMS ----------------
+  async function loadItems() {
+    const res = await fetch("/api/items");
+    const data = await res.json();
+
+    itemsTbody.innerHTML = "";
+    itemsCards.innerHTML = "";
+
+    data.forEach(item => {
+      // --- Desktop table ---
+      const tr = document.createElement("tr");
+      tr.dataset.id = item.id;
+      tr.innerHTML = `
+        <td>${item.name}</td>
+        <td>${item.category}</td>
+        <td>${item.price}</td>
+        <td>${item.description || ""}</td>
+        <td>
+          <button class="editBtn">✏️</button>
+          <button class="deleteBtn">🗑</button>
+        </td>
+      `;
+      itemsTbody.appendChild(tr);
+
+      // --- Mobile card ---
+      const card = document.createElement("div");
+      card.className = "card";
+      card.dataset.id = item.id;
+      card.innerHTML = `
+        <strong>${item.name}</strong>
+        <p>Category: ${item.category}</p>
+        <p>Price: ${item.price}</p>
+        <p>${item.description || ""}</p>
+        <div class="actions">
+          <button class="editBtn">✏️</button>
+          <button class="deleteBtn">🗑</button>
+        </div>
+      `;
+      itemsCards.appendChild(card);
+    });
+
+    attachItemEvents();
+    enableDragDrop();
+  }
 
   // ---------------- ADD / EDIT ----------------
   addItemBtn.addEventListener("click", () => openForm());
   saveBtn.addEventListener("click", saveItem);
-  cancelBtn.addEventListener("click", () => formModal.style.display = "none");
 
   function openForm(item = null) {
     formModal.style.display = "flex";
@@ -67,50 +110,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ---------------- LOAD ITEMS ----------------
-  async function loadItems() {
-    const res = await fetch("/api/items");
-    const data = await res.json();
-    itemsTbody.innerHTML = "";
-    itemsCards.innerHTML = "";
+  async function saveItem() {
+    const payload = {
+      name: inputName.value,
+      category: inputCategory.value,
+      price: Number(inputPrice.value),
+      description: inputDescription.value
+    };
 
-    data.forEach(item => {
-      // Table row
-      const tr = document.createElement("tr");
-      tr.dataset.id = item.id;
-      tr.draggable = true;
-      tr.innerHTML = `
-        <td>${item.name}</td>
-        <td>${item.category}</td>
-        <td>${item.price}</td>
-        <td>${item.description || ""}</td>
-        <td>
-          <button class="editBtn">✏️</button>
-          <button class="deleteBtn">🗑</button>
-        </td>
-      `;
-      itemsTbody.appendChild(tr);
+    if (editingItemId) {
+      await fetch(`/api/items/${editingItemId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    } else {
+      await fetch(`/api/items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }
 
-      // Mobile card
-      const card = document.createElement("div");
-      card.className = "card";
-      card.dataset.id = item.id;
-      card.draggable = true;
-      card.innerHTML = `
-        <strong>${item.name}</strong>
-        <p>Category: ${item.category}</p>
-        <p>Price: ${item.price}</p>
-        <p>${item.description || ""}</p>
-        <div class="actions">
-          <button class="editBtn">✏️</button>
-          <button class="deleteBtn">🗑</button>
-        </div>
-      `;
-      itemsCards.appendChild(card);
-    });
-
-    attachItemEvents();
-    enableDragAndDrop();
+    formModal.style.display = "none";
+    loadItems();
   }
 
   // ---------------- EDIT / DELETE ----------------
@@ -121,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         editItem(id);
       };
     });
+
     document.querySelectorAll(".deleteBtn").forEach(btn => {
       btn.onclick = e => {
         const id = e.target.closest("[data-id]").dataset.id;
@@ -142,95 +166,73 @@ document.addEventListener("DOMContentLoaded", () => {
     loadItems();
   }
 
-  async function saveItem() {
-    const payload = {
-      name: inputName.value,
-      category: inputCategory.value,
-      price: Number(inputPrice.value),
-      description: inputDescription.value
-    };
-    if (editingItemId) {
-      await fetch(`/api/items/${editingItemId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-    } else {
-      await fetch(`/api/items`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-    }
-    formModal.style.display = "none";
-    loadItems();
-  }
-
   // ---------------- DRAG & DROP ----------------
-  function enableDragAndDrop() {
-    // Desktop rows
-    let draggedRow = null;
-    itemsTbody.querySelectorAll("tr").forEach(tr => {
-      tr.addEventListener("dragstart", () => { draggedRow = tr; });
-      tr.addEventListener("dragover", e => { e.preventDefault(); tr.style.borderTop="2px solid #2196f3"; });
-      tr.addEventListener("dragleave", () => { tr.style.borderTop=""; });
-      tr.addEventListener("drop", async e => {
-        e.preventDefault();
-        tr.style.borderTop="";
-        if (!draggedRow || draggedRow === tr) return;
-        tr.parentNode.insertBefore(draggedRow, tr);
-        await reorderSequential();
-      });
-    });
-
-    // Mobile cards
-    let draggedCard = null;
-    itemsCards.querySelectorAll(".card").forEach(card => {
-      card.addEventListener("dragstart", () => { draggedCard = card; });
-      card.addEventListener("dragover", e => { e.preventDefault(); card.style.borderTop="2px solid #2196f3"; });
-      card.addEventListener("dragleave", () => { card.style.borderTop=""; });
-      card.addEventListener("drop", async e => {
-        e.preventDefault();
-        card.style.borderTop="";
-        if (!draggedCard || draggedCard === card) return;
-        itemsCards.insertBefore(draggedCard, card);
-        await reorderSequential();
-      });
-    });
-  }
-
-  // ---------------- REORDER SEQUENTIAL ----------------
-async function reorderSequential() {
-  try {
+  function enableDragDrop() {
     const rows = Array.from(itemsTbody.querySelectorAll("tr"));
 
-    const updates = rows
-      .map((tr, index) => {
-        const id = Number(tr.dataset.id);
-        if (isNaN(id)) return null; // skip rows without valid id
-        return {
-          id: id,
-          item_order: index + 1
-        };
-      })
-      .filter(Boolean); // remove nulls
+    let dragSrc = null;
 
-    console.log("Reorder payload:", updates);
+    rows.forEach(row => {
+      row.draggable = true;
 
+      row.addEventListener("dragstart", e => {
+        dragSrc = row;
+        e.dataTransfer.effectAllowed = "move";
+      });
+
+      row.addEventListener("dragover", e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      });
+
+      row.addEventListener("drop", e => {
+        e.preventDefault();
+        if (row === dragSrc) return;
+
+        const parent = row.parentNode;
+        parent.insertBefore(dragSrc, row.nextSibling);
+        reorderSequential();
+      });
+    });
+  }
+
+  async function reorderSequential() {
+  const rows = Array.from(itemsTbody.querySelectorAll("tr"));
+  const updates = [];
+  const seenCategories = [];
+
+  rows.forEach((tr, index) => {
+    const id = Number(tr.dataset.id);
+    if (!id || isNaN(id)) return; // <-- skip invalid ids!
+
+    const category = tr.querySelector("td:nth-child(2)").textContent.trim();
+    if (!seenCategories.includes(category)) seenCategories.push(category);
+    const category_order = seenCategories.indexOf(category) + 1;
+
+    updates.push({
+      id,
+      item_order: index + 1,
+      category_order
+    });
+  });
+
+  console.log("🔥 Reorder payload (filtered):", updates);
+
+  if (updates.length === 0) return;
+
+  try {
     const res = await fetch("/api/items/reorder", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates)
     });
 
-    if (!res.ok) {
-      const data = await res.json();
-      console.error("Reorder failed:", data);
-    } else {
-      loadItems();
-    }
+    const data = await res.json();
+    if (data.error) console.error("Reorder failed:", data);
+    else console.log("✅ Items reordered successfully");
   } catch (err) {
-    console.error("Reorder error:", err);
+    console.error("Reorder failed:", err);
   }
 }
 
+});
