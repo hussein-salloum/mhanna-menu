@@ -1,81 +1,214 @@
-const form = document.getElementById("itemForm");
-const list = document.getElementById("adminItems");
-const imageInput = document.getElementById("imageInput");
-let editId = null;
+console.log("✅ admin.js loaded");
 
-fetchItems();
+// ---------------- DOM Elements ----------------
+const loginModal = document.getElementById("loginModal");
+const adminPanel = document.getElementById("adminPanel");
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
 
-function fetchItems() {
-  fetch("/api/items").then(res => res.json()).then(renderItems);
+const itemsTable = document.getElementById("items");
+const addItemBtn = document.getElementById("addItemBtn");
+
+const formModal = document.getElementById("formModal");
+const formTitle = document.getElementById("formTitle");
+const saveBtn = document.getElementById("saveBtn");
+
+const inputName = document.getElementById("name");
+const inputCategory = document.getElementById("category");
+const inputPrice = document.getElementById("price");
+const inputDescription = document.getElementById("description");
+
+let editingItemId = null;
+let dragSrc = null;
+
+// ---------------- LOGIN ----------------
+loginBtn.onclick = async () => {
+  const username = document.getElementById("user").value;
+  const password = document.getElementById("pass").value;
+
+  const res = await fetch("/api/admin/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  if (!res.ok) {
+    loginError.textContent = "Wrong credentials";
+    return;
+  }
+
+  loginModal.style.display = "none";
+  adminPanel.hidden = false;
+  loadItems();
+};
+
+// ---------------- LOAD ITEMS ----------------
+async function loadItems() {
+  const res = await fetch("/api/items");
+  const items = await res.json();
+
+  itemsTable.innerHTML = "";
+
+  items.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.dataset.id = item.id;
+    tr.dataset.category = item.category;
+    tr.dataset.item_order = item.item_order;
+    tr.dataset.category_order = item.category_order;
+    tr.draggable = true;
+
+    tr.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.category}</td>
+      <td>${item.price}</td>
+      <td>${item.description || ""}</td>
+      <td>
+        <button class="editBtn">✏️</button>
+        <button class="deleteBtn">🗑</button>
+      </td>
+    `;
+
+    enableDrag(tr);
+    itemsTable.appendChild(tr);
+  });
+
+  // Edit/Delete
+  document.querySelectorAll(".editBtn").forEach(btn =>
+    btn.onclick = e => editItem(e.target.closest("tr").dataset.id)
+  );
+  document.querySelectorAll(".deleteBtn").forEach(btn =>
+    btn.onclick = e => deleteItem(e.target.closest("tr").dataset.id)
+  );
 }
 
-function renderItems(items) {
-  list.innerHTML = "";
-  items.forEach(item => {
-    list.innerHTML += `
-      <div class="admin-card">
-        <div>
-          <strong>${item.name}</strong> - ${item.price} د.ك
-        </div>
-        <div>
-          <button onclick="editItem('${item.id}')">✏️</button>
-          <button onclick="deleteItem('${item.id}')">🗑️</button>
-        </div>
-      </div>
-    `;
+// ---------------- ADD / EDIT ----------------
+addItemBtn.onclick = () => openForm();
+saveBtn.onclick = saveItem;
+
+function openForm(item = null) {
+  formModal.style.display = "flex";
+  editingItemId = item?.id || null;
+  formTitle.textContent = item ? "Edit Item" : "Add Item";
+
+  inputName.value = item?.name || "";
+  inputCategory.value = item?.category || "";
+  inputPrice.value = item?.price || "";
+  inputDescription.value = item?.description || "";
+}
+
+async function saveItem() {
+  const payload = {
+    name: inputName.value,
+    category: inputCategory.value,
+    price: inputPrice.value,
+    description: inputDescription.value
+  };
+
+  // --- Determine item_order ---
+  const allItems = await fetch("/api/items").then(r => r.json());
+  const itemsInCategory = allItems.filter(i => i.category === payload.category);
+  payload.item_order = editingItemId
+    ? undefined // keep order if editing
+    : itemsInCategory.length + 1;
+
+  // --- Determine category_order ---
+  const uniqueCategories = [...new Set(allItems.map(i => i.category))];
+  if (!uniqueCategories.includes(payload.category)) {
+    // new category -> assign last + 1
+    payload.category_order = uniqueCategories.length + 1;
+  } else {
+    // existing category -> find its order
+    const firstItem = allItems.find(i => i.category === payload.category);
+    payload.category_order = firstItem.category_order;
+  }
+
+  const url = editingItemId ? `/api/items/${editingItemId}` : "/api/items";
+  const method = editingItemId ? "PUT" : "POST";
+
+  await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  formModal.style.display = "none";
+  loadItems();
+}
+
+const cancelBtn = document.getElementById("cancelBtn");
+
+cancelBtn.addEventListener("click", () => {
+  closeForm(); // reuse your existing closeForm() function
+});
+
+function closeForm() {
+  formModal.style.display = "none";
+}
+
+
+
+// ---------------- EDIT / DELETE ----------------
+async function editItem(id) {
+  const res = await fetch("/api/items");
+  const items = await res.json();
+  const item = items.find(i => i.id == id);
+  if (item) openForm(item);
+}
+
+async function deleteItem(id) {
+  if (!confirm("Delete item?")) return;
+  await fetch(`/api/items/${id}`, { method: "DELETE" });
+  loadItems();
+}
+
+// ---------------- DRAG & DROP ----------------
+function enableDrag(tr) {
+  tr.addEventListener("dragstart", () => dragSrc = tr);
+  tr.addEventListener("dragover", e => e.preventDefault());
+
+  tr.addEventListener("drop", e => {
+    e.preventDefault();
+    if (dragSrc !== tr) {
+      itemsTable.insertBefore(dragSrc, tr);
+      reorderSequential();
+    }
   });
 }
 
-form.onsubmit = async (e) => {
-  e.preventDefault();
+// ---------------- REORDER SEQUENTIAL ----------------
+async function reorderSequential() {
+  const rows = [...itemsTable.children];
 
-  const [name, description, price, category] = [...form.querySelectorAll("input:not([type=file])")].map(i => i.value);
-  let image_url = "";
+  // Group by category
+  const grouped = {};
+  rows.forEach(tr => {
+    const cat = tr.dataset.category;
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(tr);
+  });
 
-  if (imageInput.files[0]) {
-    const formData = new FormData();
-    formData.append("image", imageInput.files[0]);
-    const res = await fetch("/api/upload", { method: "POST", body: formData });
-    const data = await res.json();
-    image_url = data.url;
+  // Assign category_order sequentially
+  let catCounter = 1;
+  for (const cat of Object.keys(grouped)) {
+    grouped[cat].forEach(tr => tr.dataset.category_order = catCounter);
+    catCounter++;
   }
 
-  const payload = { name, description, price, category, image_url };
+  // Assign item_order within category
+  Object.values(grouped).forEach(items => {
+    items.forEach((tr, idx) => tr.dataset.item_order = idx + 1);
+  });
 
-  if (editId) {
-    await fetch(`/api/items/${editId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    editId = null;
-  } else {
-    await fetch("/api/items", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-  }
+  // Prepare updates for backend
+  const updates = rows.map(tr => ({
+    id: tr.dataset.id,
+    item_order: Number(tr.dataset.item_order),
+    category_order: Number(tr.dataset.category_order)
+  }));
 
-  form.reset();
-  fetchItems();
-};
-
-function deleteItem(id) {
-  if (!confirm("حذف العنصر؟")) return;
-  fetch(`/api/items/${id}`, { method: "DELETE" }).then(fetchItems);
-}
-
-function editItem(id) {
-  fetch("/api/items")
-    .then(res => res.json())
-    .then(items => {
-      const item = items.find(i => i.id === id);
-      const inputs = form.querySelectorAll("input:not([type=file])");
-      inputs[0].value = item.name;
-      inputs[1].value = item.description;
-      inputs[2].value = item.price;
-      inputs[3].value = item.category;
-      editId = id;
-    });
+  await fetch("/api/items/reorder", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ updates })
+  });
 }

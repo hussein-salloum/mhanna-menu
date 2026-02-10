@@ -1,37 +1,55 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة إدارة مطعم المنقل</title>
-<link rel="stylesheet" href="style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Admin Panel</title>
+<link rel="stylesheet" href="/admin.css">
 </head>
 <body>
-<script>
-  const pass = prompt("كلمة المرور:");
-  if (pass !== "admin123") location.href = "/";
-</script>
 
-<header>
-  <h1>لوحة إدارة مطعم المنقل</h1>
-</header>
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <h3>Admin Login</h3>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button id="loginBtn">Login</button>
+    <p id="loginError" style="color:red"></p>
+  </div>
+</div>
 
-<main>
-  <form id="itemForm">
-    <input type="text" placeholder="اسم الطبق" required>
-    <input type="text" placeholder="الوصف" required>
-    <input type="number" placeholder="السعر" step="0.01" required>
-    <input type="text" placeholder="الفئة" required>
-    <input type="file" id="imageInput">
-    <button type="submit">حفظ</button>
-  </form>
+<!-- ADMIN PANEL -->
+<div id="adminPanel" hidden>
+  <button id="addItemBtn">➕ Add Item</button>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="items"></tbody>
+  </table>
+</div>
 
-  <div id="adminItems"></div>
-</main>
+<!-- ADD / EDIT MODAL -->
+<div id="formModal" class="modal" style="display:none">
+  <div class="modal-content">
+    <h3 id="formTitle"></h3>
+    <input id="name" placeholder="Name">
+    <input id="category" placeholder="Category">
+    <input id="price" placeholder="Price">
+    <textarea id="description" placeholder="Description"></textarea>
+    <button id="saveBtn">Save</button>
+    <button type="button" id="cancelBtn">Cancel</button>
 
-<script src="admin.js"></script>
+  </div>
+</div>
+
+<script src="/admin.js" defer></script>
 </body>
 </html>
