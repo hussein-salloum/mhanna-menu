@@ -1,4 +1,6 @@
 console.log("✅ admin.js loaded");
+console.log("loginModal:", loginModal);
+console.log("adminPanel:", adminPanel);
 
 // ---------------- DOM ----------------
 const loginModal = document.getElementById("loginModal");
