@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel</title>
-<link rel="stylesheet" href="/admin.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
 <!-- LOGIN MODAL -->
-<div id="loginModal">
-  <div class="login-content">
+<div id="loginModal" class="modal">
+  <div class="modal-content">
     <h2>Admin Login</h2>
     <input type="text" id="user" placeholder="Username">
     <input type="password" id="pass" placeholder="Password">
-    <div class="login-buttons">
+    <div class="buttons">
       <button id="loginBtn">Login</button>
       <button id="cancelLoginBtn">Cancel</button>
     </div>
@@ -22,11 +22,15 @@
   </div>
 </div>
 
-
 <!-- ADMIN PANEL -->
 <div id="adminPanel" hidden>
-  <button id="addItemBtn">➕ Add Item</button>
-  <table border="1">
+  <header>
+    <h1>Restaurant Menu Admin</h1>
+    <button id="addItemBtn">+ Add Item</button>
+  </header>
+
+  <!-- TABLE FOR DESKTOP -->
+  <table id="itemsTable">
     <thead>
       <tr>
         <th>Name</th>
@@ -38,24 +42,26 @@
     </thead>
     <tbody id="items"></tbody>
   </table>
+
+  <!-- CARDS FOR MOBILE -->
+  <div id="itemsCards" class="cards"></div>
 </div>
 
-<!-- ADD / EDIT MODAL -->
-<div id="formModal">
-  <div class="form-content">
-    <h2 id="formTitle">Add/Edit Item</h2>
-    <input type="text" id="name" placeholder="Item Name">
+<!-- ADD / EDIT ITEM MODAL -->
+<div id="formModal" class="modal">
+  <div class="modal-content">
+    <h2 id="formTitle">Add Item</h2>
+    <input type="text" id="name" placeholder="Name">
     <input type="text" id="category" placeholder="Category">
-    <input type="number" id="price" placeholder="Price" min="0">
-    <textarea id="description" placeholder="Description (optional)"></textarea>
-    <div class="form-buttons">
+    <input type="number" id="price" placeholder="Price">
+    <textarea id="description" placeholder="Description"></textarea>
+    <div class="buttons">
       <button id="saveBtn">Save</button>
       <button id="cancelBtn">Cancel</button>
     </div>
   </div>
 </div>
 
-
-  <script src="/admin.js" type="module"></script>
+<script src="admin.js" type="module"></script>
 </body>
 </html>
