@@ -32,7 +32,7 @@ body {
 #items tr {
   background: #fff;
   transition: background 0.2s;
-  cursor: grab; /* draggable rows */
+  cursor: grab; /* draggable row */
   border-radius: 6px;
 }
 
@@ -51,47 +51,6 @@ body {
 button.editBtn { background-color: #4CAF50; color: white; }
 button.deleteBtn { background-color: #f44336; color: white; }
 
-/* ---------------- TABLE (MOBILE / CARD STYLE) ---------------- */
-@media (max-width: 768px) {
-  #items thead { display: none; }
-
-  #items tr {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 12px;
-    background: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-
-  #items td {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    font-size: 16px;
-  }
-
-  #items td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    width: 120px;
-  }
-
-  #items td:last-child {
-    justify-content: flex-end;
-    margin-top: 6px;
-  }
-}
-
-/* ---------------- DRAGGING FEEDBACK ---------------- */
-.dragging {
-  opacity: 0.6;
-  background-color: #e0f7fa !important;
-}
-
-/* Add Item Button */
 #addItemBtn {
   margin-bottom: 16px;
   padding: 12px 16px;
@@ -104,7 +63,7 @@ button.deleteBtn { background-color: #f44336; color: white; }
 }
 
 /* ---------------- FORM MODAL ---------------- */
-#formModal {
+#formModal, #loginModal {
   display: none;
   position: fixed;
   top:0; left:0; right:0; bottom:0;
@@ -114,7 +73,7 @@ button.deleteBtn { background-color: #f44336; color: white; }
   z-index: 1000;
 }
 
-.form-content {
+.form-content, .login-content {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
@@ -125,13 +84,13 @@ button.deleteBtn { background-color: #f44336; color: white; }
   flex-direction: column;
 }
 
-.form-content h2 {
+.form-content h2, .login-content h2 {
   margin-bottom: 16px;
   text-align: center;
 }
 
-.form-content input,
-.form-content textarea {
+.form-content input, .form-content textarea,
+.login-content input {
   margin-bottom: 12px;
   padding: 12px;
   font-size: 16px;
@@ -139,13 +98,13 @@ button.deleteBtn { background-color: #f44336; color: white; }
   border: 1px solid #ccc;
 }
 
-.form-buttons {
+.form-buttons, .login-buttons {
   display: flex;
   gap: 12px;
   justify-content: space-between;
 }
 
-.form-buttons button {
+.form-buttons button, .login-buttons button {
   flex: 1;
   padding: 12px;
   font-size: 16px;
@@ -155,60 +114,8 @@ button.deleteBtn { background-color: #f44336; color: white; }
 }
 
 #saveBtn { background-color: #4CAF50; color: white; }
-#cancelBtn { background-color: #ccc; color: black; }
-
-/* ---------------- LOGIN MODAL ---------------- */
-#loginModal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top:0; left:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.6);
-  z-index: 1000;
-}
-
-.login-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 350px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-}
-
-.login-content h2 {
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-.login-content input {
-  margin-bottom: 12px;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.login-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-}
-
-.login-buttons button {
-  flex: 1;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
+#cancelBtn, #cancelLoginBtn { background-color: #ccc; color: black; }
 #loginBtn { background-color: #2196F3; color: white; }
-#cancelLoginBtn { background-color: #ccc; color: black; }
 
 .error-text {
   color: red;
@@ -217,9 +124,8 @@ button.deleteBtn { background-color: #f44336; color: white; }
   font-size: 14px;
 }
 
-/* ---------------- MOBILE RESPONSIVE ---------------- */
+/* ---------------- MOBILE CARD STYLE ---------------- */
 @media (max-width: 768px) {
-  /* Table becomes card-style */
   #items thead { display: none; }
 
   #items tr {
@@ -228,8 +134,10 @@ button.deleteBtn { background-color: #f44336; color: white; }
     margin-bottom: 12px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    padding: 10px;
+    padding: 12px;
     background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    cursor: grab;
   }
 
   #items td {
@@ -239,13 +147,21 @@ button.deleteBtn { background-color: #f44336; color: white; }
     font-size: 16px;
   }
 
+  #items td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 8px;
+    flex: 1;
+  }
+
   #items td:last-child {
     justify-content: flex-end;
     margin-top: 6px;
   }
 }
 
-/* Drag hint */
+/* ---------------- DRAGGING FEEDBACK ---------------- */
 .dragging {
   opacity: 0.6;
+  background-color: #e0f7fa !important;
 }
