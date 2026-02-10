@@ -200,31 +200,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------------- REORDER SEQUENTIAL ----------------
-  async function reorderSequential() {
-    try {
-      const rows = itemsTbody.querySelectorAll("tr");
-const updates = Array.from(rows).map((tr, index) => ({
-  id: Number(tr.dataset.id), // convert string to number
-  item_order: index + 1
-}));
+async function reorderSequential() {
+  try {
+    const rows = Array.from(itemsTbody.querySelectorAll("tr"));
 
-      console.log("Reorder payload:", updates);
+    const updates = rows
+      .map((tr, index) => {
+        const id = Number(tr.dataset.id);
+        if (isNaN(id)) return null; // skip rows without valid id
+        return {
+          id: id,
+          item_order: index + 1
+        };
+      })
+      .filter(Boolean); // remove nulls
 
-      const res = await fetch("/api/items/reorder", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates)
-      });
+    console.log("Reorder payload:", updates);
 
-      if (!res.ok) {
-        const data = await res.json();
-        console.error("Reorder failed:", data);
-      } else {
-        loadItems();
-      }
-    } catch (err) {
-      console.error("Reorder error:", err);
+    const res = await fetch("/api/items/reorder", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates)
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      console.error("Reorder failed:", data);
+    } else {
+      loadItems();
     }
+  } catch (err) {
+    console.error("Reorder error:", err);
   }
+}
 
-});
